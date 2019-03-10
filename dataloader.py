@@ -12,29 +12,37 @@ from base_dataloader import BaseDataset, get_params, get_transform, normalize
 class StereoDataloader(Dataset):
     __left = []
     __right = []
+    __stereo = []
 
     def __init__(self, opt):
         self.opt = opt
-        filename = self.opt.filename
-        dataroot = self.opt.dataroot
-        arrlenth = 66 + len(dataroot)
-        arrlen = '|S' + str(arrlenth)
-        arr = np.genfromtxt(filename, dtype=arrlen, delimiter=' ')
+        # filename = self.opt.filename
+        # dataroot = self.opt.dataroot
+        # arrlenth = 66 + len(dataroot)
+        # arrlen = '|S' + str(arrlenth)
+        # arr = np.genfromtxt(filename, dtype=arrlen, delimiter=' ')
         # transform_list = [transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5),(0.5, 0.5, 0.5))]
         # transform_list = [transforms.Normalize((0.5, 0.5, 0.5),(0.5, 0.5, 0.5))]
         # self.transforms = transforms.Compose(transform_list)
-        n_line = open(filename).read().count('\n')
-        for line in range(n_line):
-            self.__left.append(dataroot + arr[line][0])
-            self.__right.append(dataroot + arr[line][1])
+        # n_line = open(filename).read().count('\n')
+        # for line in range(n_line):
+        #     self.__left.append(dataroot + arr[line][0])
+        #     self.__right.append(dataroot + arr[line][1])
+
+        dirListing = os.listdir("/floyd/input/holopix_10k/stereo/")
+        a = len(dirListing)*0.8
+        for item in dirListing[:a]:
+            if ".png" in item:
+                self.__stereo.append("/floyd/input/holopix_10k/stereo/" + item)
+
 
     def __getitem__(self, index):
+        stereo_img = Image.open(self.__stereo[index]).convert('RGB')
+        s = stereo_img.size
+        img1 = stereo_img.crop((0, 0, s[0] / 2, s[1]))
+        img2 = stereo_img.crop((0, 0, s[0] / 2, s[1]))
 
-        img1 = Image.open(self.__left[index])
         params = get_params(self.opt, img1.size)
-
-        img1 = Image.open(self.__left[index]).convert('RGB')
-        img2 = Image.open(self.__right[index]).convert('RGB')
 
         arg = random.random() > 0.5
         if arg:
