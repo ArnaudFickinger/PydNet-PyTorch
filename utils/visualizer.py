@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import os
 import ntpath
 import time
-from Light2D.utils import util
-from Light2D.utils import html
+from utils import util
+from utils import html
 import scipy.misc
 import csv
 

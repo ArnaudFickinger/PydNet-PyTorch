@@ -10,14 +10,12 @@ from base_dataloader import BaseDataset, get_params, get_transform, normalize
 
 class StereoDataloader_test(Dataset):
     __stereo = []
-    __left = []
-    __right = []
 
     def __init__(self, opt):
         self.opt = opt
 
         dirListing = os.listdir("/floyd/input/holopix_10k/stereo/")
-        a = len(dirListing) * 0.8
+        a = int(len(dirListing) * 0.8)
         for item in dirListing[a:]:
             if ".png" in item:
                 self.__stereo.append("/floyd/input/holopix_10k/stereo/" + item)
@@ -73,4 +71,4 @@ class StereoDataloader_test(Dataset):
         return input_dict
 
     def __len__(self):
-        return len(self.__left)
+        return len(self.__stereo)

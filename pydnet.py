@@ -25,7 +25,7 @@ class Pydnet(nn.Module):
         self.disp = nn.Sigmoid()
 
         # Upsampling
-        deconv1 = nn.ConvTranspose2d(in_channels=8, out_channels=8, kernel_size=2, stride=2)
+        self.deconv = nn.ConvTranspose2d(in_channels=8, out_channels=8, kernel_size=2, stride=2)
 
     def conv_down_block(self, in_channels, out_channels):
         conv_down_block = []
@@ -54,19 +54,24 @@ class Pydnet(nn.Module):
 
         conv6b = self.conv_dec_6(conv6)
         disp6 = self.disp(conv6b)
-        concat5 = torch.cat((conv5, conv6b))
+        conv6b = self.deconv(conv6b)
+        concat5 = torch.cat((conv5, conv6b), 1)
         conv5b = self.conv_dec_5(concat5)
         disp5 = self.disp(conv5b)
-        concat4 = torch.cat((conv4, conv5b))
+        conv5b = self.deconv(conv5b)
+        concat4 = torch.cat((conv4, conv5b), 1)
         conv4b = self.conv_dec_4(concat4)
         disp4 = self.disp(conv4b)
-        concat3 = torch.cat((conv3, conv4b))
+        conv4b = self.deconv(conv4b)
+        concat3 = torch.cat((conv3, conv4b), 1)
         conv3b = self.conv_dec_3(concat3)
         disp3 = self.disp(conv3b)
-        concat2 = torch.cat((conv2, conv3b))
+        conv3b = self.deconv(conv3b)
+        concat2 = torch.cat((conv2, conv3b), 1)
         conv2b = self.conv_dec_2(concat2)
         disp2 = self.disp(conv2b)
-        concat1 = torch.cat((conv1, conv2b))
+        conv2b = self.deconv(conv2b)
+        concat1 = torch.cat((conv1, conv2b), 1)
         conv1b = self.conv_dec_1(concat1)
         disp1 = self.disp(conv1b)
 
